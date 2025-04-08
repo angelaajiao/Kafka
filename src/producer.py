@@ -1,27 +1,48 @@
+import json
+import time
+import requests
 from kafka import KafkaProducer
-import sys
+from datetime import datetime
 
-if len(sys.argv) < 2:
-    print("Enter topic name")
-    sys.exit(1)
+def get_bitcoin_price():
+    try:
+        response = requests.get('https://api.coinbase.com/v2/prices/spot?currency=')
+        return float(response.json()['data']['amount'])
+    except Exception as e:
+        print("Error al obtener precio:", e)
+        return None
 
-topic_name = sys.argv[1]
+def get_hash_rate():
+    try:
+        response = requests.get('https://api.blockchain.info/q/hashrate')
+        # Devuelve en GH/s — lo convertimos a TH/s
+        return float(response.text) / 1000
+    except Exception as e:
+        print("Error al obtener hash rate:", e)
+        return None
 
 producer = KafkaProducer(
     bootstrap_servers='localhost:9092',
-    acks='all',
-    retries=0,
-    batch_size=16384,
-    linger_ms=1,
-    buffer_memory=33554432,
-    key_serializer=lambda k: k.encode('utf-8'),
-    value_serializer=lambda v: v.encode('utf-8')
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
-for i in range(10):
-    key = str(i)
-    value = str(i)
-    producer.send(topic_name, key=key, value=value)
-    print("Message sent successfully")
+topic = 'btc-stream'
 
-producer.close()
+print("Productor iniciado. Enviando datos a Kafka...")
+
+while True:
+    price = get_bitcoin_price()
+    hash_rate = get_hash_rate()
+    timestamp = datetime.utcnow().isoformat()
+
+    if price is not None and hash_rate is not None:
+        data = {
+            'timestamp': timestamp,
+            'price_usd': price,
+            'hash_rate_ths': hash_rate
+        }
+
+        producer.send(topic, value=data)
+        print(f"📤 Enviado: {data}")
+
+    time.sleep(1)  # Espera 1 segundo
