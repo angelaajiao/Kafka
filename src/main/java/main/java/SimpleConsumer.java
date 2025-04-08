@@ -1,3 +1,4 @@
+package main.java;
 import java.util.Properties;
 import java.util.Arrays;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
