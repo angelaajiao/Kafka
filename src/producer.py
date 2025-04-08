@@ -61,5 +61,10 @@ while True:
             print(f"Error al enviar datos a Kafka: {e}")
         except Exception as e:
             print(f"Error inesperado al enviar datos a Kafka: {e}")
-            
+        
+        except KeyboardInterrupt:
+            print("\nInterrupción del teclado recibida. Cerrando el productor de Kafka...")
+            producer.close()  # Cierra el productor de Kafka de manera ordenada
+            print("Productor de Kafka cerrado. Programa terminado.")
+
     time.sleep(1)  # Espera 1 segundo
