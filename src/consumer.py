@@ -34,6 +34,24 @@ def animate(i):
         msg = next(consumer)
         data = msg.value
 
+        #Manejo de excepciones
+        try:
+            timestamp = data['timestamp']
+            price = data['price_usd']
+            hash_rate = data['hash_rate_ths']
+        except KeyError as e:
+            print(f"Error de clave: {e}")
+            return
+        except TypeError as e:
+            print(f"Error de tipo al procesar el mensaje: {e}")
+            return
+        
+        # Nos aseguramos de que los datos sean válidos
+        if not(isinstance(price, (int, float)) and isinstance(hash_rate, (int, float))):
+            print(f"Datos inválidos: price={price}, hash_rate={hash_rate}")
+            return
+        
+        #actualizamos las listas
         timestamps.append(data['timestamp'])
         prices.append(data['price_usd'])
         hash_rates.append(data['hash_rate_ths'])
@@ -52,7 +70,15 @@ def animate(i):
 
     except StopIteration:
         pass
-
+    except json.JSONDecodeError as e:
+        print(f"Error al decodificar JSON: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}") 
+    except KeyboardInterrupt:
+        print("Interrumpido por el usuario.")
+        consumer.close()
+        exit()
+ 
 ani = animation.FuncAnimation(fig, animate, interval=1000)
 plt.title("Bitcoin Price & Hash Rate (Real-Time)")
 plt.tight_layout()
