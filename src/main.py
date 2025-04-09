@@ -4,9 +4,11 @@ from visualizer import Visualizer
 
 if __name__ == '__main__':
     producer_thread = Thread(target=Producer().run)
-    visualizer_thread = Thread(target=Visualizer().run)
-
     producer_thread.start()
+
+
+    visualizer = Visualizer()
+    visualizer_thread = Thread(target=visualizer.run)
     visualizer_thread.start()
 
     producer_thread.join()

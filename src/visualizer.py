@@ -44,6 +44,7 @@ class Visualizer:
         self.ax2.set_ylabel('Hash Rate (TH/s)', color='b')
 
     def run(self):
+        # Usa el hilo principal para la animación
         ani = animation.FuncAnimation(self.fig, self.animate, interval=1000)
         plt.title("Bitcoin Price & Hash Rate (Real-Time)")
         plt.tight_layout()
