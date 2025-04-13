@@ -57,7 +57,7 @@ def animate(i):
         ax1.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
         ax1.xaxis.set_major_locator(mdates.AutoDateLocator())
         fig.autofmt_xdate()
-        
+
         line_price.set_data(timestamps, prices)
         line_hash.set_data(timestamps, hash_rates)
         ax1.set_xlim([min(timestamps), max(timestamps)])
@@ -67,7 +67,7 @@ def animate(i):
             ax1.set_ylim(min(prices) - price_margin, max(prices) + price_margin)
             ax2.set_ylim(min(hash_rates) - hash_margin, max(hash_rates) + hash_margin)
 
-        ax1.set_xlabel('Medidas (últimas a la derecha)')
+        ax1.set_xlabel('Tiempo')
         ax1.set_ylabel('BTC Price (USD)', color='g')
         ax2.set_ylabel('Hash Rate (TH/s)', color='b')
         ax1.legend(loc='upper left')
