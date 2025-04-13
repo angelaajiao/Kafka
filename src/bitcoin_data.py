@@ -38,7 +38,7 @@ def create_kafka_producer():
 
 def build_data(price, hash_rate):
     return {
-        'timestamp': datetime.utcnow().isoformat(),
+        'timestamp': datetime.utcnow().strftime('%H:%M:%S'),
         'price_usd': price,
         'hash_rate_ths': hash_rate
     }

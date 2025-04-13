@@ -46,14 +46,18 @@ def animate(i):
         hash_rates.append(data['hash_rate_ths'])
 
         # Actualizar datos
-        line_price.set_data(range(len(prices)), prices)
-        line_hash.set_data(range(len(hash_rates)), hash_rates)
+        line_price.set_data(list(timestamps), list(prices))
+        line_hash.set_data(list(timestamps), list(hash_rates))
+
+        # Actualizamos las etiquetas del eje X (timestamps como hora)
+        ax1.set_xticks(range(len(timestamps)))  # Cada punto de tiempo en el eje X
+        ax1.set_xticklabels(timestamps, rotation=45, ha='right')  # Mostrar los timestamps como etiquetas
 
         ax1.set_xlim(0, len(prices))
         ax1.set_ylim(min(prices) * 0.98, max(prices) * 1.02)
         ax2.set_ylim(min(hash_rates) * 0.98, max(hash_rates) * 1.02)
 
-        ax1.set_xlabel('Timestamps (latest last)')
+        ax1.set_xlabel('Timestamps (Hora)')
         ax1.set_ylabel('BTC Price (USD)', color='g')
         ax2.set_ylabel('Hash Rate (TH/s)', color='b')
 
@@ -68,7 +72,7 @@ def animate(i):
         consumer.close()
         exit()
  
-ani = animation.FuncAnimation(fig, animate, interval=1000)
+ani = animation.FuncAnimation(fig, animate, interval=1000, cache_frame_data=False)
 plt.title("Bitcoin Price & Hash Rate (Real-Time)")
 plt.tight_layout()
 plt.show()
