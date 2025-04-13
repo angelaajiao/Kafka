@@ -5,7 +5,7 @@ from datetime import datetime
 
 def get_bitcoin_price():
     try:
-        response = requests.get('https://api.coinbase.com/v2/prices/spot?currency=')
+        response = requests.get('https://api.coinbase.com/v2/prices/spot?currency=USD')
         return float(response.json()['data']['amount'])
     except requests.RequestException as e:
         print("Error de conexión o solicitud al obtener precio:", e)
@@ -38,7 +38,7 @@ def create_kafka_producer():
 
 def build_data(price, hash_rate):
     return {
-        'timestamp': datetime.utcnow().strftime('%H:%M:%S'),
+        'timestamp': datetime.utcnow().isoformat(),
         'price_usd': price,
         'hash_rate_ths': hash_rate
     }
